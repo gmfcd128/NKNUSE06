@@ -1,7 +1,9 @@
+#! python3.5
 import tkinter as tk                   
 from tkinter import ttk
 from tkinter import messagebox
 import TkTreectrl as treectrl
+from tkinter.scrolledtext import ScrolledText
 from tkinter import *
 import dataset
 import sys
@@ -57,7 +59,7 @@ def update_info():
     db.query('UPDATE Employees SET Phone = "' + phone_entry.get() +'" WHERE ID=' + str(user_id) +';')
     db.query('UPDATE Employees SET Address = "' + address_entry.get() +'" WHERE ID=' + str(user_id) +';')
     db.query('UPDATE Employees SET Education = "' + education_entry.get() +'" WHERE ID=' + str(user_id) +';')
-    db.query('UPDATE Employees SET About = "' + extra_entry.get() +'" WHERE ID=' + str(user_id) +';')
+    db.query('UPDATE Employees SET About = "' + extra_entry.get(1.0,END) +'" WHERE ID=' + str(user_id) +';')
 
 
 Grid.columnconfigure(tab3, 1, weight=1)
@@ -98,9 +100,9 @@ education_entry.grid(row=5, column=1, sticky=E + W)
 education_entry.insert(0, current_user['Education'])
 Grid.rowconfigure(tab3, 6, weight=1)
 extra_prompt = Label(tab3, text="自我介紹").grid(row=6, column=0, sticky=N + W)
-extra_entry = Entry(tab3)
+extra_entry = ScrolledText(tab3)
 extra_entry.grid(row=6, column=1, sticky=N + W + E + S)
-extra_entry.insert(0, current_user['About'])
+extra_entry.insert(INSERT, current_user['About'])
 save_button = Button(tab3, text="更新內容", command=update_info)
 save_button.grid(row=7, column=1)
 

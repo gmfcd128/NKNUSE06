@@ -1,3 +1,4 @@
+#! python3.5
 from tkinter import *
 from tkinter import messagebox
 import tkinter
@@ -8,9 +9,8 @@ import os
 db = dataset.connect('sqlite:///users.db')    
 
 
-
 def test():
-    messagebox.showinfo("Info", "We're FUCKED.")
+    messagebox.showerror("Oh, no", "We're FUCKED")
 
     
 def verify(username, password):
@@ -20,8 +20,7 @@ def verify(username, password):
             window.destroy()
             os.system("python find_job.py %d" % (user['ID']))
             return
-    messagebox.showerror("登入失敗", "系統查無此使用者")
-
+    messagebox.showerror("登入失敗", "帳號或密碼輸入錯誤")
 
     
 window = tkinter.Tk()
@@ -44,8 +43,5 @@ button_register.pack(side=LEFT)
 frame_form.pack(pady=10)
 frame_buttons.pack()
 
-
-
 window.mainloop()
-
 
