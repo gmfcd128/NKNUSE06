@@ -28,7 +28,14 @@ frame_form = Frame(window)
 frame_buttons = Frame(window)
 window.title("E04求職登入器")
 window.resizable(width=False, height=False)
-window.geometry('300x110')
+window.geometry('450x250')
+
+#插入圖片
+window.canvas = tkinter.Canvas(height=160, width=400)
+window.image_file = tkinter.PhotoImage(file='get_a_job.png')#匯入圖檔
+window.image = window.canvas.create_image(0,0, anchor='nw', image=window.image_file)
+window.canvas.pack(side='bottom')
+
 username_prompt = Label(frame_form , text="使用者名稱").grid(row=0, column=0, sticky=E)
 password_prompt = Label(frame_form , text="密碼").grid(row=1, column=0, sticky=E)
 username_entry = Entry(frame_form)
