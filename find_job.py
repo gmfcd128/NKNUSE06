@@ -8,16 +8,14 @@ from tkinter import *
 import dataset
 import sys
 
-db = dataset.connect('sqlite:///users.db') 
+db = dataset.connect('sqlite:///users.db')
+jobs_db = dataset.connect('sqlite:///jobs.db') 
 user_id = 0
 
 
 def test():
     messagebox.showinfo("Info", "We're FUCKED.")
 
-
-def select_cmd(selected):
-    print ('Selected items:', selected)
 
 
 window2 = tk.Tk() 
@@ -44,12 +42,42 @@ search.grid_columnconfigure(0, weight=1)
 search_button = Button(search, text="搜尋", command=test).grid(row=0, column=1, padx=5, pady=5)
 search.pack(expand=0, fill=X)
 
+selected_job = None
+
+def select_cmd(selected):
+    print ('Selected item ID:', int(list_jobs.get(list_jobs.curselection()[0])[0][0]))
+    global selected_job
+    selected_job = jobs_db['Jobs'].find_one(ID=list_jobs.get(list_jobs.curselection()[0])[0][0])
+    print(selected_job['ID'])
+
+def apply(job):
+    print(selected_job['ID'])
+    print(current_user['ID'])
+    jobs_db['Replies'].insert(dict(Company=selected_job['Company'], RecipientId=current_user['ID']))
 # 職缺列表
-listbox = treectrl.MultiListbox(tab1)
-listbox.pack(expand=1, fill="both")
-listbox.focus_set()   
-listbox.configure(selectcmd=select_cmd, selectmode='extended')
-listbox.config(columns=('職位名稱', '工作地點', "工作時間", "應徵人數"))
+list_jobs = treectrl.MultiListbox(tab1)
+list_jobs.pack(expand=1, fill="both")
+list_jobs.focus_set()   
+list_jobs.configure(selectcmd=select_cmd, selectmode='extended')
+list_jobs.config(columns=('ID', '名稱', '發布公司', "待遇", "缺額", '聯絡資訊'))
+
+for job in jobs_db['Jobs']:
+    #因應python預設不支援多行文字 在時間不足以重寫UI下對多行文字進行格式化
+    contact = job['Contact'].splitlines()
+    contact_display = "/".join(contact)
+    list_jobs.insert(END, job['ID'], job['Name'], job['Company'], job['Salary'], job['Vacancy'], contact_display)
+    print(job['Contact'])
+
+button_apply = Button(tab1, text='應徵', command = lambda:apply(selected_job))
+button_apply.pack()
+
+#求職狀態
+list_replies = treectrl.MultiListbox(tab2)
+list_replies.pack(expand=1, fill="both")
+list_replies.focus_set()
+list_replies.configure(columns=('職位', '公司', '結果'))
+
+
 
 #按下更新按鈕後執行以下sql命令更新資料庫
 def update_info():
@@ -62,39 +90,34 @@ def update_info():
     db.query('UPDATE Employees SET About = "' + extra_entry.get(1.0,END) +'" WHERE ID=' + str(user_id) +';')
 
 
+#資料編輯頁面
 Grid.columnconfigure(tab3, 1, weight=1)
 name_prompt = Label(tab3, text="姓名").grid(row=0, column=0, sticky=N + W)
-
 name_entry = Entry(tab3)
 name_entry.grid(row=0, column=1, sticky=E + W)
 name_entry.insert(0, current_user['Name'])
 
 gender_prompt = Label(tab3, text="性別").grid(row=1, column=0, sticky=N + W)
-
 gender_entry = Entry(tab3)
 gender_entry.grid(row=1, column=1, sticky=E + W)
 gender_entry.insert(0, current_user['Gender'])
 
 age_prompt = Label(tab3, text="年齡").grid(row=2, column=0, sticky=N + W)
-
 age_entry = Entry(tab3)
 age_entry.grid(row=2, column=1, sticky=E + W)
 age_entry.insert(0, current_user['Age'])
 
 address_prompt = Label(tab3, text="地址").grid(row=3, column=0, sticky=N + W)
-
 address_entry = Entry(tab3)
 address_entry.grid(row=3, column=1, sticky=E + W)
 address_entry.insert(0, current_user['Address'])
 
 phone_prompt = Label(tab3, text="電話").grid(row=4, column=0, sticky=N + W)
-
 phone_entry = Entry(tab3)
 phone_entry.grid(row=4, column=1, sticky=E + W)
 phone_entry.insert(0, current_user['Phone'])
 
 education_prompt = Label(tab3, text="教育程度").grid(row=5, column=0, sticky=N + W)
-
 education_entry = Entry(tab3)
 education_entry.grid(row=5, column=1, sticky=E + W)
 education_entry.insert(0, current_user['Education'])
@@ -105,6 +128,8 @@ extra_entry.grid(row=6, column=1, sticky=N + W + E + S)
 extra_entry.insert(INSERT, current_user['About'])
 save_button = Button(tab3, text="更新內容", command=update_info)
 save_button.grid(row=7, column=1)
+
+
 
 # 畫面出現
 
