@@ -30,13 +30,14 @@ def signup():
     option_employee = Radiobutton(frame_radiobuttons, text="求職者",variable=usertype, value=1).grid(row=0, column=0)
     option_employer = Radiobutton(frame_radiobuttons, text="企業主", variable=usertype, value=2).grid(row=0, column=1)
     frame_radiobuttons.grid(row=3, column=1)
-    register_button = Button(signup_window, text="送出", command=lambda: add_user(username_entry.get(), password_entry.get()))
+    register_button = Button(signup_window, text="送出", command=lambda: add_user(username_entry.get(), password_entry.get(), name_entry.get()))
     frame_form.pack(pady=10)
     register_button.pack()
+
     
 
-    def add_user(username, password):
-        if username!="" and password!="" and name!="" and usertype!="":
+    def add_user(username, password, name):
+        if username!="" and password!=""  and name!="" and usertype.get()!=0:
             for employee in db['Employees']:
                 if employee['Username'] == username:
                     messagebox.showerror("錯誤", "此帳號已被註冊")
@@ -96,5 +97,3 @@ frame_form.pack(pady=10)
 frame_buttons.pack()
 
 window.mainloop()
-
-
