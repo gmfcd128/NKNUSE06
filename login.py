@@ -52,7 +52,8 @@ def signup():
                                             Age=0, Gender=" ", Phone=" ",
                                             Address=" ", Education=" ",About=" "))
             elif usertype.get() == 2:    
-                db['Employers'].insert(dict(Username=username,Pw=password))
+                db['Employers'].insert(dict(userName=username,passWord=password, companyIntro=" ",
+                                            companyName=" ", companyDes=" "))
             messagebox.showinfo("註冊成功", "您可以登入程式開始搷寫履歷!") 
             signup_window.destroy()   
         else:
@@ -65,6 +66,12 @@ def verify(username, password):
             messagebox.showinfo("登入成功", "即將進入求職者視角")
             window.destroy()
             os.system("python find_job.py %d" % (user['ID']))
+            return
+    for company in db['Employer']:
+        if company['userName'] == username and company['passWord'] == password:
+            messagebox.showinfo("登入成功", "即將進入公司方視角")
+            window.destroy()
+            os.system("python employer.py %d" % (company['ID']))
             return
     messagebox.showerror("登入失敗", "帳號或密碼輸入錯誤")
 
