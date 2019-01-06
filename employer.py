@@ -85,8 +85,11 @@ def gui(id):
                 recipient = db['Employees'].find_one(ID=reply['RecipientID'])
                 list_resume.insert(END, reply['ID'], recipient['Name'], recipient['Gender'], recipient['Phone'], recipient['Address'], recipient['Education'], job['Name'])
     
+
     apply_button = Button(tab1, text="查看自介", command=lambda:view_detail())
     apply_button.pack(pady=5)
+    if list_resume.size()==0:
+        apply_button.config(state=DISABLED)
         
     # 公司資料排版
     Grid.columnconfigure(tab2 , 1 , weight=1)
@@ -140,8 +143,8 @@ def gui(id):
     # 功能 : 更新資訊(可以改變sql)
     def company_update():
         db.query('UPDATE Employer SET companyName = "' + companyName.get() + '" WHERE ID=' + str(user_id) + ';')
-        db.query('UPDATE Employer SET companyIntro = "' + intro_entry.get() + '" WHERE ID=' + str(user_id) + ';')
-        db.query('UPDATE Employer SET companyDes = "' + rules_entry.get() + '" WHERE ID=' + str(user_id) + ';')
+        db.query('UPDATE Employer SET companyIntro = "' + intro_entry.get('1.0', END) + '" WHERE ID=' + str(user_id) + ';')
+        db.query('UPDATE Employer SET companyDes = "' + rules_entry.get('1.0', END) + '" WHERE ID=' + str(user_id) + ';')
         
     # 公司資料排版
     Grid.columnconfigure(tab3 , 1 , weight=1)
