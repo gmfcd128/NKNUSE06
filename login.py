@@ -40,15 +40,15 @@ def signup():
         if username!="" and password!=""  and name!="" and usertype.get()!=0:
             for employee in db['Employees']:
                 if employee['Username'] == username:
-                    messagebox.showerror("錯誤", "此帳號已被註冊")
+                    messagebox.showerror("註冊失敗", "此帳號已被註冊")
                     return
             for employer in db['Employers']:
                 if employer['Username'] == username:
-                    messagebox.showerror("錯誤", "此帳號已被註冊")
+                    messagebox.showerror("註冊失敗", "此帳號已被註冊")
                     return
             if usertype.get() == 1:
                 #務必檢查該搷的欄位是否都有在註冊時填到，不然進到主程式的時候讀到空值會錯誤。
-                db['Employees'].insert(dict(Username=username,Pw=password,
+                db['Employees'].insert(dict(Name=name, Username=username, Pw=password,
                                             Age=0, Gender=" ", Phone=" ",
                                             Address=" ", Education=" ",About=" "))
             elif usertype.get() == 2:    
@@ -56,7 +56,7 @@ def signup():
             messagebox.showinfo("註冊成功", "您可以登入程式開始搷寫履歷!") 
             signup_window.destroy()   
         else:
-            messagebox.showinfo("錯誤","有欄位沒有填寫")
+            messagebox.showerror("註冊失敗","有欄位沒有填寫")
     
         
 def verify(username, password):
